@@ -1,30 +1,12 @@
-#
-# Nginx Dockerfile
-#
-# https://github.com/dockerfile/nginx
-#
+# this shows how we can extend/change an existing official image from Docker Hub
 
-# Pull base image.
-FROM ubuntu
+FROM nginx:latest
+# highly recommend you always pin versions for anything beyond dev/learn
 
-# Install Nginx.
-RUN \
-  add-apt-repository -y ppa:nginx/stable && \
-  apt-get update && \
-  apt-get install -y nginx && \
-  rm -rf /var/lib/apt/lists/* && \
-  echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
-  chown -R www-data:www-data /var/lib/nginx
+WORKDIR /usr/share/nginx/html
+# change working directory to root of nginx webhost
+# using WORKDIR is preferred to using 'RUN cd /some/path'
 
-# Define mountable directories.
-VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/var/log/nginx", "/var/www/html"]
+COPY index.html index.html
 
-# Define working directory.
-WORKDIR /etc/nginx
-
-# Define default command.
-CMD ["nginx"]
-
-# Expose ports.
-EXPOSE 80
-EXPOSE 443
+# I don't have to specify EXPOSE or CMD because they're in my FROM
